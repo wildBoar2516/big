@@ -1,0 +1,18 @@
+services:
+  postgres:
+    images: postgres:16-alpine
+    container_name: fs-postgres
+    environment:
+      POSTGRES_DB: big
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: aaaaaa
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+      - ./src/main/resources/schema.sq:/docker-entrypoint-initdb.d/01-schema.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL","pd_isready -U fs -d flashsale"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
